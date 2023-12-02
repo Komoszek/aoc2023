@@ -1,7 +1,14 @@
-use const_format::concatcp;
+use lazy_static::lazy_static;
 use regex::Regex;
 use std::env;
 use std::fs;
+
+lazy_static! {
+    static ref L_REGEX: Regex =
+        Regex::new("one|two|three|four|five|six|seven|eight|nine|\\d").unwrap();
+    static ref R_REGEX: Regex =
+        Regex::new("enin|thgie|neves|xis|evif|ruof|eerht|owt|eno|\\d").unwrap();
+}
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -41,11 +48,8 @@ fn is_decimal_digit(c: char) -> bool {
 fn get_calibration_value_part_2(str: &str) -> u32 {
     let reversed_str = reverse(str);
 
-    let l_regex = Regex::new(L_REGEX_STRING).unwrap();
-    let r_regex = Regex::new(R_REGEX_STRING).unwrap();
-
-    let l_match = l_regex.find(str).map(|x| x.as_str()).unwrap();
-    let r_match = r_regex
+    let l_match = L_REGEX.find(str).map(|x| x.as_str()).unwrap();
+    let r_match = R_REGEX
         .find(reversed_str.as_str())
         .map(|x| x.as_str())
         .unwrap();
@@ -72,9 +76,3 @@ fn get_number_from_string(str: &str) -> u32 {
         _ => str.parse::<u32>().unwrap(),
     };
 }
-
-const STRING_DIGIT_REGEX_STRING: &str = "one|two|three|four|five|six|seven|eight|nine";
-const STRING_DIGIT_REVERSE_REGEX_STRING: &str = "enin|thgie|neves|xis|evif|ruof|eerht|owt|eno";
-const DIGIT_REGEX_STRING: &str = "\\d";
-const L_REGEX_STRING: &str = concatcp!(STRING_DIGIT_REGEX_STRING, "|", DIGIT_REGEX_STRING);
-const R_REGEX_STRING: &str = concatcp!(STRING_DIGIT_REVERSE_REGEX_STRING, "|", DIGIT_REGEX_STRING);
